@@ -96,7 +96,7 @@ def procesar_facturas():
                 url = f"https://api.alegra.com/api/v1/items/{id_item}"
                 headers = {
                     "accept": "application/json",
-                    "authorization": "Basic bWVyY2Fkb2Fncmljb2xhZGVsYXNpZXJyYTNAZ21haWwuY29tOjI0MTFmYTQ3NzUyMjRjYTkyNWNk"
+                    "authorization": "Basic your_api_key"
                 }
                 response_item = requests.get(url, headers=headers).json()
                 item = {
@@ -119,7 +119,7 @@ def procesar_facturas():
             headers = {
                 "accept": "application/json",
                 "content-type": "application/json",
-                "authorization": "Basic bWVyY2Fkb2Fncmljb2xhZGVsYXNpZXJyYTNAZ21haWwuY29tOjI0MTFmYTQ3NzUyMjRjYTkyNWNk"
+                "authorization": "Basic your_api_key"
             }
             response = requests.post("https://api.alegra.com/api/v1/invoices", json=payload, headers=headers)
             response_json = response.json()
@@ -130,7 +130,7 @@ def procesar_facturas():
             payload = { "ids": [id] }
             headers = {
                         "accept": "application/json",
-                        "authorization": "Basic bWVyY2Fkb2Fncmljb2xhZGVsYXNpZXJyYTNAZ21haWwuY29tOjI0MTFmYTQ3NzUyMjRjYTkyNWNk",
+                        "authorization": "Basic your_api_key",
                         "content-type": "application/json"
                     }
             
