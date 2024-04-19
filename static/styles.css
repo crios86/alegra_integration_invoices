@@ -1,0 +1,101 @@
+.container {
+    width: 90%; /* Ajuste del ancho del contenedor */
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f7f7f7;
+    color: #333;
+    border-radius: 15px; /* Bordes más redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sutil aumento de sombra */
+}
+
+.container h1 {
+    text-align: center;
+    font-size: 28px; /* Tamaño de fuente aumentado */
+    margin-bottom: 30px; /* Espaciado inferior incrementado */
+}
+
+.container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px; /* Espaciado inferior incrementado */
+}
+
+.container th, .container td {
+    border: 1px solid #ccc;
+    padding: 15px; /* Aumento del espaciado interno */
+}
+
+.container th {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+}
+
+.container .button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 12px 24px; /* Aumento del relleno */
+    cursor: pointer;
+    border-radius: 8px; /* Bordes más redondeados */
+    transition: background-color 0.3s ease;
+    font-size: 18px; /* Tamaño de fuente aumentado */
+}
+
+.container .button:hover {
+    background-color: #0056b3;
+}
+
+.container .remove-row {
+    background-color: #ff6666;
+    color: #fff;
+    border: none;
+    padding: 8px 16px; /* Ajuste del relleno */
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+}
+
+.container .remove-row:hover {
+    background-color: #cc0000;
+}
+
+#addInvoiceRow {
+    margin-bottom: 30px; /* Espaciado inferior incrementado */
+}
+
+#clearFormButton {
+    margin-top: 30px; /* Espaciado superior incrementado */
+    padding: 12px 24px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#clearFormButton:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Sutil aumento de sombra */
+}
+
+/* Ajustar el tamaño de la celda "Razón Social" en la tabla */
+#invoiceTable th:first-child,
+#invoiceTable td:first-child {
+    width: 20%; /* Proporción ajustada */
+}
+
+@media (max-width: 768px) {
+    .container h1 {
+        font-size: 24px; /* Tamaño de fuente reducido para dispositivos móviles */
+    }
+    
+    .container .button,
+    .container .remove-row,
+    #clearFormButton {
+        padding: 10px 20px; /* Reducción del relleno para dispositivos móviles */
+        font-size: 16px; /* Tamaño de fuente reducido para dispositivos móviles */
+    }
+}

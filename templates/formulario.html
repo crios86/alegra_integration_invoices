@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procesamiento de Facturas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container" id="miFormulario">
+        <h1>Facturas - Johan Rios</h1>
+        <form action="/procesar_facturas" method="post">
+            <table id="invoiceTable">
+                <thead>
+                    <tr>
+                        <th>Razón Social</th>
+                        <th>Nombre Producto</th>
+                        <th>Cantidad</th>
+                        <th>Nombre Establecimiento</th>
+                        <th>Número de Orden</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="form-row">
+                        <!-- Ajustar el tamaño de la celda "Razón Social" -->
+                        <td style="width: 150px;">
+                            <select name="razon_social" required>
+                                {% for name in customer_names %}
+                                <option value="{{ name }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <select name="nombre_producto" required>
+                                <!-- Opciones se generarán dinámicamente -->
+                            </select>
+                        </td>
+                        <td><input type="number" name="cantidad" required></td>
+                        <td><input type="text" name="nombre_establecimiento" required></td>
+                        <td><input type="text" name="num_orden" required></td>
+                        <td><button type="button" class="remove-row">Eliminar</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button type="button" id="addInvoiceRow" class="button">Agregar Factura</button>
+            <button type="submit" class="send-to-alegra button">Enviar Facturas a Alegra</button>
+            <button type="button" id="actualizarClientes" class="button">Actualizar Clientes</button>
+            <button type="button" id="actualizarProductos" class="button">Actualizar Productos</button>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
+                <div class="progress-message" id="progressMessage"></div>
+            </div>
+        </form>
+        <button type="button" id="clearFormButton" class="button">Limpiar Formulario</button>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
