@@ -35,7 +35,7 @@ def invoces_send_alegra(df):
                         'codigo_producto' : cod_producto,
                         'precio_unitario' :unit_price,
                         'fecha_creacion'  : datetime.now().strftime('%Y-%m-%d')
-                    }
+                     }
         
         df_codigos = pd.DataFrame(df_codigos)
         pedidos_df = pd.concat([pedidos_df, df_codigos], axis=1)
@@ -54,47 +54,50 @@ def invoces_send_alegra(df):
                 quantity = row['cantidad']
                 url = f"https://api.alegra.com/api/v1/items/{id_item}"
                 headers = {
-                    "accept": "application/json",
-                    "authorization": "Basic your_api_key"
-                }
+                            "accept": "application/json",
+                            "authorization": "Basic bWVyY2Fkb2Fncmljb2xhZGVsYXNpZXJyYTNAZ21haWwuY29tOjI0MTFmYTQ3NzUyMjRjYTkyNWNk"
+                          }
                 response_item = requests.get(url, headers=headers).json()
                 item = {
-                    "id": int(response_item['id']),
-                    "quantity": int(row['cantidad']),
-                    "price": int(response_item['price'][0]['price'])
-                }
+                        "id": int(response_item['id']),
+                        "quantity": int(row['cantidad']),
+                        "price": int(response_item['price'][0]['price'])
+                       }
                 items.append(item)
 
             payload = {
-                "status": "open",
-                "paymentForm": "CASH",
-                "paymentMethod": "CASH",
-                "client": {"id": int(df['codigo_cliente'].iloc[0])},
-                "date": df['fecha_creacion'].iloc[0],
-                "dueDate": df['fecha_creacion'].iloc[0],
-                "items": items,
-                "anotation": df['nombre_establecimiento'].iloc[0] + ', ' + df['numero_orden'].iloc[0]
-            }
+                        "status": "open",
+                        "paymentForm": "CASH",
+                        "paymentMethod": "CASH",
+                        "client": {"id": int(df['codigo_cliente'].iloc[0])},
+                        "date": df['fecha_creacion'].iloc[0],
+                        "dueDate": df['fecha_creacion'].iloc[0],
+                        "items": items,
+                        "anotation": df['nombre_establecimiento'].iloc[0] + ', ' + df['numero_orden'].iloc[0]
+                      }
+
             headers = {
-                "accept": "application/json",
-                "content-type": "application/json",
-                "authorization": "Basic your_api_key"
-            }
+                        "accept": "application/json",
+                        "content-type": "application/json",
+                        "authorization": "Basic bWVyY2Fkb2Fncmljb2xhZGVsYXNpZXJyYTNAZ21haWwuY29tOjI0MTFmYTQ3NzUyMjRjYTkyNWNk"
+                      }
+
             response = requests.post("https://api.alegra.com/api/v1/invoices", json=payload, headers=headers)
             response_json = response.json()
             
             id = int(response_json['id'])
 
             url = "https://api.alegra.com/api/v1/invoices/stamp"
-            payload = { "ids": [id] }
+            # payload = { "ids": [id] }
             headers = {
                         "accept": "application/json",
-                        "authorization": "Basic your_api_key",
+                        "authorization": "Basic bWVyY2Fkb2Fncmljb2xhZGVsYXNpZXJyYTNAZ21haWwuY29tOjI0MTFmYTQ3NzUyMjRjYTkyNWNk",
                         "content-type": "application/json"
-                    }
+                      }
             
             response = requests.post(url, json=payload, headers=headers)
             response_invoice = response.json()
             print(response_invoice)
+        return "facturas electrónicas de venta han sido emitidas exitosamente"
     except:
         return 'Error al procesar facturas'

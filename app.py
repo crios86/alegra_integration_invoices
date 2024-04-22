@@ -1,16 +1,44 @@
-from flask import Flask, render_template, request, jsonify
-from customer_update import fetch_all_contacts, fetch_customer_names,visualizar_clientes
-from items_update import fetch_all_items, create_dataframe, create_sqlite_database,visualizar_productos
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+from form_login import LoginForm, verificar_credenciales
+from customer_update import fetch_all_contacts, fetch_customer_names
+from items_update import fetch_all_items, create_dataframe, create_sqlite_database, visualizar_productos
 from invoice_send import invoces_send_alegra
 import pandas as pd
 
-
 app = Flask(__name__)
+app.secret_key = 'crios86'  # Cambia esto a una clave segura
 
+# Ruta para la página principal, redirige al formulario de inicio de sesión
 @app.route('/')
 def index():
-    return render_template('formulario.html')
+    return redirect(url_for('login'))
 
+# Ruta para iniciar sesión
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+        user = verificar_credenciales(email, password)
+        if user:
+            # Autenticación exitosa, establece la sesión de usuario y redirige
+            session['usuario_autenticado'] = True
+            return redirect(url_for('formulario'))
+        else:
+            # Credenciales incorrectas, mostrar un mensaje de error
+            return render_template('login.html', form=form, error='Credenciales incorrectas')
+    return render_template('login.html', form=form)
+
+# Ruta para el formulario, protegida con autenticación
+@app.route('/formulario')
+def formulario():
+    if 'usuario_autenticado' in session:
+        return render_template('formulario.html')
+    else:
+        return redirect(url_for('login'))
+
+# Resto de tus rutas y funciones sin cambios
 @app.route('/customer_names')
 def get_customer_names():
     names = fetch_customer_names()
@@ -34,23 +62,21 @@ def procesar_facturas():
 
         # Crear un DataFrame con los datos
         data = {
-
-                'razon_social': razones_sociales,
-                'nombre_producto': nombres_productos,
-                'cantidad': cantidades,
-                'nombre_establecimiento': nombres_establecimientos,
-                'numero_orden': numeros_orden
-                
-                }
+            'razon_social': razones_sociales,
+            'nombre_producto': nombres_productos,
+            'cantidad': cantidades,
+            'nombre_establecimiento': nombres_establecimientos,
+            'numero_orden': numeros_orden
+        }
 
         df = pd.DataFrame(data)
         print(df)
-
         invoces_send_alegra(df=df)
 
-        return "facturas electrónicas de venta han sido emitidas exitosamente"
-    except:
-        return "Error  al enviar las Facturas, intente de nuevo"
+        return "Facturas procesadas correctamente"  # Devuelve un mensaje de éxito
+
+    except Exception as e:
+        return f"Error al procesar las facturas: {str(e)}"      
 
 @app.route('/actualizar_clientes')
 def actualizar_clientes():
