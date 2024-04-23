@@ -88,7 +88,7 @@ def invoces_send_alegra(df):
             id = int(response_json['id'])
 
             url = "https://api.alegra.com/api/v1/invoices/stamp"
-            # payload = { "ids": [id] }
+            payload = { "ids": [id] }
             headers = {
                         "accept": "application/json",
                         "authorization": "Basic your_api_key",
@@ -98,6 +98,24 @@ def invoces_send_alegra(df):
             response = requests.post(url, json=payload, headers=headers)
             response_invoice = response.json()
             print(response_invoice)
+            
+            # enviar por correo
+            url = "https://api.alegra.com/api/v1/invoices/"+ str(id) +"/email"
+
+            payload = {
+                "emailMessage": { "subject": "Factura Johan R" },
+                "emails": ["criosriosm86@gmail.com"]
+            }
+            headers = {
+                "accept": "application/json",
+                "content-type": "application/json",
+                "authorization": "Basic your_api_key"
+            }
+
+            response = requests.post(url, json=payload, headers=headers)
+
+            print(response.text)
+
         return "facturas electrónicas de venta han sido emitidas exitosamente"
     except:
         return 'Error al procesar facturas'

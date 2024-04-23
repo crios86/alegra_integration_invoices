@@ -1,32 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('form').addEventListener('submit', function(e) {
-        e.preventDefault(); // Evitar el envío predeterminado del formulario
-
-        var email = document.getElementById('email').value;
-        var password = document.getElementById('password').value;
-
-        // Enviar las credenciales al backend para verificar
-        fetch('/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: email, password: password }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.authenticated) {
-                // Establecer la sesión como usuario autenticado
-                sessionStorage.setItem('usuario_autenticado', 'true');
-                window.location.replace('/formulario'); // Redirigir al formulario
-            } else {
-                // Mostrar mensaje de error en el frontend
-                document.getElementById('error-message').innerText = 'Credenciales incorrectas';
-            }
-        })
-        .catch(error => console.error('Error al iniciar sesión:', error));
-    });
-
     // Obtener los nombres de los clientes del backend
     fetch('/customer_names')
         .then(response => response.json())
