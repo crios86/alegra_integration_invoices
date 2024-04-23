@@ -1,44 +1,54 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session
-from form_login import LoginForm, verificar_credenciales
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
+from form_login import LoginForm
 from customer_update import fetch_all_contacts, fetch_customer_names
-from items_update import fetch_all_items, create_dataframe, create_sqlite_database, visualizar_productos
+from items_update import fetch_all_items, create_dataframe, create_sqlite_database
 from invoice_send import invoces_send_alegra
+from flask_wtf.csrf import CSRFProtect
 import pandas as pd
 
 app = Flask(__name__)
 app.secret_key = 'crios86'  # Cambia esto a una clave segura
+csrf = CSRFProtect(app)
 
-# Ruta para la página principal, redirige al formulario de inicio de sesión
+usuarios = {
+    'usuario1@email.com': 'password1',
+    'usuario2@email.com': 'password2'
+}
+
+@app.before_request
+def before_request():
+    if 'usuario' not in session and request.endpoint not in ['login', 'static']:
+        flash('Debes iniciar sesión para acceder a esta página.', 'error')
+        return redirect(url_for('login'))
+
 @app.route('/')
 def index():
-    return redirect(url_for('login'))
-
-# Ruta para iniciar sesión
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        password = form.password.data
-        user = verificar_credenciales(email, password)
-        if user:
-            # Autenticación exitosa, establece la sesión de usuario y redirige
-            session['usuario_autenticado'] = True
-            return redirect(url_for('formulario'))
-        else:
-            # Credenciales incorrectas, mostrar un mensaje de error
-            return render_template('login.html', form=form, error='Credenciales incorrectas')
-    return render_template('login.html', form=form)
-
-# Ruta para el formulario, protegida con autenticación
-@app.route('/formulario')
-def formulario():
-    if 'usuario_autenticado' in session:
+    if 'usuario' in session:
         return render_template('formulario.html')
     else:
         return redirect(url_for('login'))
 
-# Resto de tus rutas y funciones sin cambios
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()  # Instanciar el formulario de inicio de sesión
+
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+
+        if email in usuarios and usuarios[email] == password:
+            # Iniciar sesión correctamente
+            session['usuario'] = email  # Establecer la sesión después de la autenticación
+            flash('Inicio de sesión exitoso.', 'success')
+            return redirect(url_for('index'))  # Redirigir a la página principal después del inicio de sesión
+        else:
+            # Error de inicio de sesión
+            flash('Credenciales inválidas. Verifica tu email y contraseña.', 'error')
+
+    return render_template('login.html', form=form)
+    
+# Resto del código sin cambios
+
 @app.route('/customer_names')
 def get_customer_names():
     names = fetch_customer_names()

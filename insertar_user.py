@@ -1,4 +1,5 @@
 import sqlite3
+import hashlib
 
 def crear_tabla():
     # Conectar con la base de datos (si no existe, se creará automáticamente)
@@ -22,8 +23,11 @@ def insertar_usuario(email, password):
     cursor = conn.cursor()
 
     try:
+        # Calcular el hash de la contraseña
+        password_hash = hashlib.sha256(password.encode()).hexdigest()
+
         # Insertar usuario si el correo electrónico no existe
-        cursor.execute("INSERT INTO login (email, password) VALUES (?, ?)", (email, password))
+        cursor.execute("INSERT INTO login (email, password) VALUES (?, ?)", (email, password_hash))
         print("Usuario insertado correctamente.")
     except sqlite3.IntegrityError:
         print("El correo electrónico ya está en uso.")
@@ -50,7 +54,7 @@ def mostrar_usuarios():
         for usuario in usuarios:
             if usuario[1] not in emails_unicos:
                 emails_unicos.add(usuario[1])
-                print(f"ID: {usuario[0]}, Email: {usuario[1]}, Password: {usuario[2]}")
+                print(f"ID: {usuario[0]},email: {usuario[1]}, password: {usuario[2]}")
 
     # Cerrar la conexión
     conn.close()
