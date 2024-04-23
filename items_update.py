@@ -7,7 +7,7 @@ def fetch_items(start_index):
     url = f"https://api.alegra.com/api/v1/items?metadata=false&start={start_index}&order_direction=ASC"
     headers = {
         "accept": "application/json",
-        "authorization": "Basic bWVyY2Fkb2Fncmljb2xhZGVsYXNpZXJyYTNAZ21haWwuY29tOjI0MTFmYTQ3NzUyMjRjYTkyNWNk"
+        "authorization": "Basic your_api_key"
     }
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
