@@ -1,7 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Email ,InputRequired
-import hashlib
 import sqlite3
 
 class LoginForm(FlaskForm):
@@ -10,23 +9,27 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Iniciar sesión')
 
 
-def verificar_credenciales(email, password):
+def users_credentials():
     try:
         # Conectar con la base de datos
         conn = sqlite3.connect('users.db')
         cursor = conn.cursor()
 
-        # Calcular el hash de la contraseña ingresada
-        password_hash = hashlib.sha256(password.encode()).hexdigest()
-
-        # Buscar el usuario en la base de datos por email y contraseña hash
-        cursor.execute("SELECT * FROM login WHERE email = ? AND password = ?", (email, password_hash))
-        user = cursor.fetchone()
+        # Obtener todas las filas de la tabla login
+        cursor.execute("SELECT email, password FROM login")
+        users_rows = cursor.fetchall()
 
         # Cerrar la conexión
         conn.close()
 
-        return user
+        # Crear un diccionario para almacenar las credenciales de los usuarios
+        users_dict = {}
+        for row in users_rows:
+            email = row[0]
+            password = row[1]
+            users_dict[email] = password
+
+        return users_dict
 
     except sqlite3.Error as error:
         print("Error de base de datos:", error)
@@ -34,4 +37,4 @@ def verificar_credenciales(email, password):
 
 
 
-print(verificar_credenciales('crios@unal.edu.co', 'carnifice86'))
+

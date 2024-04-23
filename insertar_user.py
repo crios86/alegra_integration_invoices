@@ -62,8 +62,8 @@ def mostrar_usuarios():
 # Crear la tabla si no existe
 crear_tabla()
 
-# Insertar usuario
-insertar_usuario('mercadoagricoladelasierra1@gmail.com', 'hierbabuena1')
+# # Insertar usuario
+# insertar_usuario('crios@unal.edu.co', 'carnifice86')
 
-# Llamar a la función para mostrar usuarios
-mostrar_usuarios()
+# # Llamar a la función para mostrar usuarios
+# mostrar_usuarios()

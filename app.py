@@ -1,19 +1,17 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
-from form_login import LoginForm
+from form_login import LoginForm, users_credentials
 from customer_update import fetch_all_contacts, fetch_customer_names
 from items_update import fetch_all_items, create_dataframe, create_sqlite_database
 from invoice_send import invoces_send_alegra
 from flask_wtf.csrf import CSRFProtect
+import hashlib
 import pandas as pd
 
 app = Flask(__name__)
 app.secret_key = 'crios86'  # Cambia esto a una clave segura
 csrf = CSRFProtect(app)
 
-usuarios = {
-    'usuario1@email.com': 'password1',
-    'usuario2@email.com': 'password2'
-}
+usuarios = users_credentials()
 
 @app.before_request
 def before_request():
@@ -35,6 +33,7 @@ def login():
     if form.validate_on_submit():
         email = form.email.data
         password = form.password.data
+        password = hashlib.sha256(password.encode()).hexdigest()
 
         if email in usuarios and usuarios[email] == password:
             # Iniciar sesión correctamente
